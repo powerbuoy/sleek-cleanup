@@ -103,8 +103,8 @@ add_action('init', function () {
 	# Remove RSS feed <link>s
 	remove_action('wp_head', 'feed_links', 2);
 
-	# Remove more feed <link>s NOTE: Does nothing?
-#	remove_action('wp_head', 'feed_links_extra', 3);
+	# Remove more feed <link>s
+	remove_action('wp_head', 'feed_links_extra', 3);
 
 	# Remove RSD <link>
 	remove_action('wp_head', 'rsd_link');
