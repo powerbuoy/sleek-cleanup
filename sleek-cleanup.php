@@ -165,7 +165,9 @@ add_action('wp_enqueue_scripts', function () {
 	# Don't touch the admin
 	if (!is_admin()) {
 		# Remove Gutenberg blocks CSS
-		wp_dequeue_style('wp-block-library');
+		if (get_theme_support('sleek-classic-editor')) {
+			wp_dequeue_style('wp-block-library');
+		}
 
 		# Remove duplicate post CSS when not logged in
 	#	if (!is_user_logged_in()) {
