@@ -143,10 +143,10 @@ add_action('init', function () {
 	# remove_filter('oembed_dataparse', 'wp_filter_oembed_result', 10);
 
 	# Remove oEmbed discovery links.
-	# remove_action('wp_head', 'wp_oembed_add_discovery_links');
+	remove_action('wp_head', 'wp_oembed_add_discovery_links');
 
 	# Remove oEmbed-specific JavaScript from the front-end and back-end.
-	# remove_action('wp_head', 'wp_oembed_add_host_js');
+	remove_action('wp_head', 'wp_oembed_add_host_js');
 
 	# Remove REST API <link>
 	remove_action('wp_head', 'rest_output_link_wp_head', 10);
