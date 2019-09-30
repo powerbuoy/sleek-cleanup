@@ -45,26 +45,6 @@ add_filter('register_sidebar_defaults', function ($defaults) {
 	return $defaults;
 });
 
-#############################
-# Clean up wp_list_categories
-add_action('wp_list_categories', function ($output) {
-	# Remove title attributes (which can be insanely long)
-	# https://www.isitwp.com/remove-title-attribute-from-wp_list_categories/
-	$output = preg_replace('/ title="(.*?)"/s', '', $output);
-
-	# If there's no current cat - add the class to the "all" link
-	if (strpos($output, 'current-cat') === false) {
-		$output = str_replace('cat-item-all', 'cat-item-all current-cat', $output);
-	}
-
-	# If there are no categories, don't display anything
-	if (strpos($output, 'cat-item-none') !== false) {
-		$output = false;
-	}
-
-	return $output;
-});
-
 #########
 # Thanks:
 # http://wpengineer.com/1438/wordpress-header/ & https://github.com/roots/soil/
