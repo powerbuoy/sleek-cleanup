@@ -26,11 +26,10 @@ add_filter('embed_oembed_html', function($html, $url, $attr, $post_id) {
 
 #####################################
 # Prevent WP wrapping iframe's in <p>
-# TODO: Double check what this actually does
 # https://gist.github.com/KTPH/7901c0d2c66dc2d754ce
-# add_filter('the_content', function ($content) {
-#	return preg_replace('/<p>\s*(<iframe .*>*.<\/iframe>)\s*<\/p>/iU', '\1', $content);
-# });
+add_filter('the_content', function ($content) {
+	return preg_replace('/<p>\s*(<iframe .*>*.<\/iframe>)\s*<\/p>/iU', '\1', $content);
+});
 
 ########################
 # Clean up widget output
