@@ -38,7 +38,6 @@ if (!is_admin()) {
 
 	########################
 	# Clean up widget output
-	# NOTE: Not yet in WP-Core
 	# https://core.trac.wordpress.org/ticket/48033
 	add_filter('register_sidebar_defaults', function ($defaults) {
 		$defaults['before_widget'] = '<div id="widget-%1$s" class="%2$s">';
