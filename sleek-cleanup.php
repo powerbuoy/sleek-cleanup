@@ -260,7 +260,11 @@ add_action('admin_footer', function () {
 	?>
 	<script>
 		window.addEventListener('load', function () {
-			$('#wpseo_meta:not(.closed) button.handlediv').click();
+			var button = document.querySelector('#wpseo_meta:not(.closed) button.handlediv');
+
+			if (button) {
+				button.click();
+			}
 		});
 	</script>
 	<?php
