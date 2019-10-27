@@ -139,8 +139,14 @@ if (!is_admin()) {
 		# Remove <meta> generator
 		remove_action('wp_head', 'wp_generator');
 
-		# NOTE: Does nothing?
-	#	remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0);
+		# Remove link[rel=shortlink]
+		remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0);
+
+		# Remove Shortlink HTTP header
+		remove_action('template_redirect', 'wp_shortlink_header', 11);
+
+		# Remove canonical
+		remove_action('wp_head', 'rel_canonical');
 
 		# Remove Emoji script
 		remove_action('wp_head', 'print_emoji_detection_script', 7);
@@ -174,6 +180,8 @@ if (!is_admin()) {
 	#	remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 	#	add_filter('use_default_gallery_style', '__return_false');
 	#	add_filter('emoji_svg_url', '__return_false');
+
+		# Remove Recent Comments CSS 🙄
 		add_filter('show_recent_comments_widget_style', '__return_false');
 	});
 
