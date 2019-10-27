@@ -174,7 +174,7 @@ if (!is_admin()) {
 	#	remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 	#	add_filter('use_default_gallery_style', '__return_false');
 	#	add_filter('emoji_svg_url', '__return_false');
-	#	add_filter('show_recent_comments_widget_style', '__return_false');
+		add_filter('show_recent_comments_widget_style', '__return_false');
 	});
 
 	##########################
