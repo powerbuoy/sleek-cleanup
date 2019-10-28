@@ -40,8 +40,8 @@ if (!is_admin()) {
 	# Clean up widget output
 	# https://core.trac.wordpress.org/ticket/48033
 	add_filter('register_sidebar_defaults', function ($defaults) {
-		$defaults['before_widget'] = '<div id="widget-%1$s" class="%2$s">';
-		$defaults['after_widget'] = '</div>';
+		$defaults['before_widget'] = '<section id="widget-%1$s" class="%2$s">';
+		$defaults['after_widget'] = '</section>';
 		$defaults['before_title'] = '<h2>';
 		$defaults['after_title'] = '</h2>';
 
