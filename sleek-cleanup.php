@@ -77,6 +77,14 @@ if (!is_admin()) {
 
 	#######################
 	# Cleanup comment form
+	add_filter('comment_form_opening_tag', function () {
+		return '<section id="comment-form">';
+	});
+
+	add_filter('comment_form_closing_tag', function () {
+		return '</section>';
+	});
+
 	add_filter('comment_form_defaults', function ($args) {
 		# A little nicer output
 		$args['id_form'] = null;
