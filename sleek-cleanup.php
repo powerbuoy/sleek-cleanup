@@ -125,6 +125,15 @@ if (!is_admin()) {
 		return $args;
 	});
 
+	##################
+	# Cleanup CF7 form
+	add_filter('wpcf7_form_elements', function ($content) {
+		# Add required attribute
+		$content = str_replace('aria-required="true"', 'required="true" aria-required="true"', $content);
+
+		return $content;
+	});
+
 	##############
 	# Cleanup head
 	# TODO: Investigate and document all of these
