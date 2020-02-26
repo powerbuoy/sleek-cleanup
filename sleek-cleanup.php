@@ -75,6 +75,16 @@ if (!is_admin()) {
 		return str_replace("'", '"', str_replace("type='text/javascript' ", '', $html));
 	});
 
+	##################################
+	# Post password button translation
+	add_filter('gettext_with_context', function ($translation, $text, $context, $domain) {
+		if ($text === 'Enter' and $context === 'post password form') {
+			return __('Log in', 'sleek');
+		}
+
+		return $translation;
+	}, 10, 4);
+
 	#######################
 	# Cleanup comment form
 	add_filter('comment_form_opening_tag', function () {
