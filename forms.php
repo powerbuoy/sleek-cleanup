@@ -1,5 +1,5 @@
 <?php
-namespace Sleek\Cleanup\Forms;
+namespace Sleek\Cleanup;
 
 #######################
 # Cleanup comment form
@@ -20,7 +20,7 @@ add_filter('comment_form_defaults', function ($args) {
 	$args['format'] = 'html5';
 
 	# Add placeholders to fields
-	if (get_theme_support('sleek/cleanup/forms/comment_form_placeholders')) {
+	if (get_theme_support('sleek/cleanup/comment_form_placeholders')) {
 		# All fields we want to add placeholders to
 		$fieldsToReplace = [
 			'author' => __('Name'),
