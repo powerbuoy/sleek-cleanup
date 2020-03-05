@@ -8,7 +8,7 @@ Cleans up a bunch of unnecessary WordPress stuff like inline emoji code, gallery
 
 Completely disable comments on the entire site.
 
-### `sleek/cleanup/forms/comment_form_placeholders`
+### `sleek/cleanup/comment_form_placeholders`
 
 Add placeholders to comment form fields.
 

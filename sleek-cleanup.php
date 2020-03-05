@@ -48,11 +48,14 @@ if (!is_admin()) {
 
 	##########################
 	# Wrap videos in div.video
-	# TODO: How does this not conflict with gallery/oembed??
-	# https://wordpress.stackexchange.com/questions/50779/how-to-wrap-oembed-embedded-video-in-div-tags-inside-the-content
-	add_filter('embed_oembed_html', function($html, $url, $attr, $post_id) {
-		return '<div class="video">' . $html . '</div>';
-	}, 99, 4);
+	# Only do this if the enhanced youtube/vimeo embeds are _not_ in usre
+	add_action('after_setup_theme', function () {
+		if (!(get_theme_support('sleek/oembed/youtube') or get_theme_support('sleek/oembed/vimeo'))) {
+			add_filter('embed_oembed_html', function($html, $url, $attr, $post_id) {
+				return '<div class="video">' . $html . '</div>';
+			}, 99, 4);
+		}
+	});
 
 	#####################################
 	# Prevent WP wrapping iframe's in <p>
