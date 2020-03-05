@@ -1,11 +1,25 @@
 <?php
 namespace Sleek\Cleanup;
 
+require_once __DIR__ . '/comments.php';
+require_once __DIR__ . '/forms.php';
+require_once __DIR__ . '/head.php';
+require_once __DIR__ . '/metaboxes.php';
+
 ################################
 # Don't do this inside the admin
-# Some stuff in here originally from:
-# http://wpengineer.com/1438/wordpress-header/ & https://github.com/roots/soil/
+# Some stuff in here originally from: http://wpengineer.com/1438/wordpress-header/ & https://github.com/roots/soil/
 if (!is_admin()) {
+	##########################
+	# Remove a bunch of CSS/JS
+	# WPML Language Switcher
+	define('ICL_DONT_LOAD_LANGUAGE_SELECTOR_CSS', true);
+	define('ICL_DONT_LOAD_NAVIGATION_CSS', true);
+	define('ICL_DONT_LOAD_LANGUAGES_JS', true);
+
+	# Contact Form 7
+	add_filter('wpcf7_load_css', '__return_false');
+
 	################################################
 	# Remove "Protected:" from protected post titles
 	add_filter('private_title_format', function () {
@@ -16,6 +30,16 @@ if (!is_admin()) {
 		return '%s';
 	});
 
+	#############################
+	# Change password form button
+	add_filter('gettext_with_context', function ($translation, $text, $context, $domain) {
+		if ($text === 'Enter' and $context === 'post password form') {
+			return __('Log in', 'sleek');
+		}
+
+		return $translation;
+	}, 10, 4);
+
 	##############################################################
 	# Fix pagination output (Remove h2, wrapping div, classes etc)
 	add_filter('navigation_markup_template', function ($template, $class) {
@@ -24,6 +48,7 @@ if (!is_admin()) {
 
 	##########################
 	# Wrap videos in div.video
+	# TODO: How does this not conflict with gallery/oembed??
 	# https://wordpress.stackexchange.com/questions/50779/how-to-wrap-oembed-embedded-video-in-div-tags-inside-the-content
 	add_filter('embed_oembed_html', function($html, $url, $attr, $post_id) {
 		return '<div class="video">' . $html . '</div>';
@@ -31,6 +56,7 @@ if (!is_admin()) {
 
 	#####################################
 	# Prevent WP wrapping iframe's in <p>
+	# NOTE: Is this needed? Yes it is
 	# https://gist.github.com/KTPH/7901c0d2c66dc2d754ce
 	add_filter('the_content', function ($content) {
 		return preg_replace('/<p>\s*(<iframe .*>*.<\/iframe>)\s*<\/p>/iU', '\1', $content);
@@ -74,254 +100,4 @@ if (!is_admin()) {
 	add_filter('script_loader_tag', function ($html) {
 		return str_replace("'", '"', str_replace("type='text/javascript' ", '', $html));
 	});
-
-	##################################
-	# Post password button translation
-	add_filter('gettext_with_context', function ($translation, $text, $context, $domain) {
-		if ($text === 'Enter' and $context === 'post password form') {
-			return __('Log in', 'sleek');
-		}
-
-		return $translation;
-	}, 10, 4);
-
-	#######################
-	# Cleanup comment form
-	add_filter('comment_form_opening_tag', function () {
-		return '<section id="comment-form">';
-	});
-
-	add_filter('comment_form_closing_tag', function () {
-		return '</section>';
-	});
-
-	add_filter('comment_form_defaults', function ($args) {
-		# A little nicer output
-		$args['id_form'] = null;
-		$args['class_form'] = null;
-		$args['title_reply_before'] = '<h2>';
-		$args['title_reply_after'] = '</h2>';
-		$args['format'] = 'html5';
-
-		# Add placeholders to fields
-		if (get_theme_support('sleek-comment-form-placeholders')) {
-			# All fields we want to add placeholders to
-			$fieldsToReplace = [
-				'author' => __('Name'),
-				'email' => __('Email'),
-				'url' => __('Website')
-			];
-
-			foreach ($fieldsToReplace as $field => $value) {
-				# Add asterisk if required
-				$required = strstr($args['fields'][$field], 'required') ? ' *' : '';
-
-				# Insert placeholder
-				$args['fields'][$field] = str_replace(
-					'name="' . $field . '"',
-					'name="' . $field . '" placeholder="' . $value . $required . '"',
-					$args['fields'][$field]
-				);
-			}
-
-			# Comment field is special and always required
-			$args['comment_field'] = str_replace(
-				'name="comment"',
-				'name="comment" placeholder="' . _x('Comment', 'noun') . ' *"',
-				$args['comment_field']
-			);
-		}
-
-		return $args;
-	});
-
-	##################
-	# Cleanup CF7 form
-	add_filter('wpcf7_form_elements', function ($content) {
-		# Add required attribute
-		$content = str_replace('aria-required="true"', 'required="true" aria-required="true"', $content);
-
-		return $content;
-	});
-
-	##############
-	# Cleanup head
-	# TODO: Investigate and document all of these
-	add_action('init', function () {
-		# Remove RSS feed <link>s
-		remove_action('wp_head', 'feed_links', 2);
-
-		# Remove more feed <link>s
-		remove_action('wp_head', 'feed_links_extra', 3);
-
-		# Remove RSD <link>
-		remove_action('wp_head', 'rsd_link');
-
-		# Remove WMLManifest <link>
-		remove_action('wp_head', 'wlwmanifest_link');
-
-		# NOTE: Does nothing?
-	#	remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
-
-		# Remove <meta> generator
-		remove_action('wp_head', 'wp_generator');
-
-		# Remove link[rel=shortlink]
-		remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0);
-
-		# Remove Shortlink HTTP header
-		remove_action('template_redirect', 'wp_shortlink_header', 11);
-
-		# Remove canonical
-		remove_action('wp_head', 'rel_canonical');
-
-		# Remove Emoji script
-		remove_action('wp_head', 'print_emoji_detection_script', 7);
-
-		# NOTE: Does nothing?
-	#	remove_action('admin_print_scripts', 'print_emoji_detection_script');
-
-		# Remove Emoji style
-		remove_action('wp_print_styles', 'print_emoji_styles');
-
-		# NOTE: Does nothing?
-	#	remove_action('admin_print_styles', 'print_emoji_styles');
-
-		# Remove the REST API endpoint.
-		# remove_action('rest_api_init', 'wp_oembed_register_route');
-
-		# Turn off oEmbed auto discovery. Don't filter oEmbed results.
-		# remove_filter('oembed_dataparse', 'wp_filter_oembed_result', 10);
-
-		# Remove oEmbed discovery links.
-		remove_action('wp_head', 'wp_oembed_add_discovery_links');
-
-		# Remove oEmbed-specific JavaScript from the front-end and back-end.
-		remove_action('wp_head', 'wp_oembed_add_host_js');
-
-		# Remove REST API <link>
-		remove_action('wp_head', 'rest_output_link_wp_head', 10);
-
-	#	remove_filter('the_content_feed', 'wp_staticize_emoji');
-	#	remove_filter('comment_text_rss', 'wp_staticize_emoji');
-	#	remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
-	#	add_filter('use_default_gallery_style', '__return_false');
-	#	add_filter('emoji_svg_url', '__return_false');
-
-		# Remove Recent Comments CSS 🙄
-		add_filter('show_recent_comments_widget_style', '__return_false');
-	});
-
-	##########################
-	# Remove a bunch of CSS/JS
-	# WPML Language Switcher
-	define('ICL_DONT_LOAD_LANGUAGE_SELECTOR_CSS', true);
-	define('ICL_DONT_LOAD_NAVIGATION_CSS', true);
-	define('ICL_DONT_LOAD_LANGUAGES_JS', true);
-
-	# Normally added styles and scripts
-	add_action('wp_enqueue_scripts', function () {
-		# Don't touch the admin
-		if (!is_admin()) {
-			# Remove Gutenberg blocks CSS
-			if (get_theme_support('sleek-classic-editor')) {
-				wp_dequeue_style('wp-block-library');
-			}
-
-			# CF7
-			wp_dequeue_style('contact-form-7');
-
-			# Remove duplicate post CSS when not logged in
-			if (!is_user_logged_in()) {
-				wp_dequeue_style('duplicate-post');
-			}
-		}
-	});
 }
-
-#############################
-# Hide some unused meta boxes
-# https://www.vanpattenmedia.com/2014/code-snippet-hide-post-meta-boxes-wordpress
-add_filter('default_hidden_meta_boxes', function ($hidden, $screen) {
-	$boxes = [
-		'authordiv',
-		'revisionsdiv',
-		'trackbacksdiv',
-		'postcustom',
-		'commentstatusdiv',
-		'commentsdiv',
-		'slugdiv'
-	];
-
-	if ($screen->post_type === 'page') {
-		$hidden = array_merge($hidden, $boxes);
-	}
-	else {
-		$hidden = array_merge($hidden, $boxes, ['pageparentdiv']);
-	}
-
-	return $hidden;
-}, 10, 2);
-
-################
-# Collapse Yoast
-add_action('admin_footer', function () {
-	?>
-	<script>
-		window.addEventListener('load', function () {
-			var button = document.querySelector('#wpseo_meta:not(.closed) button.handlediv');
-
-			if (button) {
-				button.click();
-			}
-		});
-	</script>
-	<?php
-}, 99);
-
-##################
-# Disable comments
-# https://gist.github.com/mattclements/eab5ef656b2f946c4bfb
-add_action('after_setup_theme', function () {
-	if (get_theme_support('sleek-disable-comments')) {
-		add_action('admin_init', function () {
-			# Redirect any user trying to access comments page
-			global $pagenow;
-
-			if ($pagenow === 'edit-comments.php') {
-				wp_redirect(admin_url());
-				exit;
-			}
-
-			# Remove comments metabox from dashboard
-			remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
-
-			# Disable support for comments and trackbacks in post types
-			foreach (get_post_types() as $post_type) {
-				if (post_type_supports($post_type, 'comments')) {
-					remove_post_type_support($post_type, 'comments');
-					remove_post_type_support($post_type, 'trackbacks');
-				}
-			}
-		});
-
-		# Close comments on the front-end
-		add_filter('comments_open', '__return_false', 20, 2);
-		add_filter('pings_open', '__return_false', 20, 2);
-
-		# Hide existing comments
-		add_filter('comments_array', '__return_empty_array', 10, 2);
-
-		# Remove comments page in menu
-		add_action('admin_menu', function () {
-			remove_menu_page('edit-comments.php');
-		});
-
-		# Remove comments links from admin bar
-		add_action('init', function () {
-			if (is_admin_bar_showing()) {
-				remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
-			}
-		});
-	}
-});
