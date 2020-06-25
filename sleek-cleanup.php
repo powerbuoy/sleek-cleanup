@@ -46,17 +46,6 @@ if (!is_admin()) {
 		return '<nav id="pagination">%3$s</nav>';
 	}, 10, 2);
 
-	##########################
-	# Wrap videos in div.video
-	# Only do this if the enhanced youtube/vimeo embeds are _not_ in usre
-	add_action('after_setup_theme', function () {
-		if (!(get_theme_support('sleek/oembed/youtube') or get_theme_support('sleek/oembed/vimeo'))) {
-			add_filter('embed_oembed_html', function($html, $url, $attr, $post_id) {
-				return '<div class="video">' . $html . '</div>';
-			}, 99, 4);
-		}
-	});
-
 	#####################################
 	# Prevent WP wrapping iframe's in <p>
 	# NOTE: Is this needed? Yes it is
