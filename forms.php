@@ -50,12 +50,3 @@ add_filter('comment_form_defaults', function ($args) {
 
 	return $args;
 });
-
-##################
-# Cleanup CF7 form
-add_filter('wpcf7_form_elements', function ($content) {
-	# Add required attribute
-	$content = str_replace('aria-required="true"', 'required="true" aria-required="true"', $content);
-
-	return $content;
-});

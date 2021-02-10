@@ -10,16 +10,6 @@ require_once __DIR__ . '/metaboxes.php';
 # Don't do this inside the admin
 # Some stuff in here originally from: http://wpengineer.com/1438/wordpress-header/ & https://github.com/roots/soil/
 if (!is_admin()) {
-	##########################
-	# Remove a bunch of CSS/JS
-	# WPML Language Switcher
-	define('ICL_DONT_LOAD_LANGUAGE_SELECTOR_CSS', true);
-	define('ICL_DONT_LOAD_NAVIGATION_CSS', true);
-	define('ICL_DONT_LOAD_LANGUAGES_JS', true);
-
-	# Contact Form 7
-	add_filter('wpcf7_load_css', '__return_false');
-
 	################################################
 	# Remove "Protected:" from protected post titles
 	add_filter('private_title_format', function () {
