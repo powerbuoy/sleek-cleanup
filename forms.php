@@ -22,6 +22,7 @@ add_filter('comment_form_defaults', function ($args) {
 	# Add placeholders to fields
 	if (get_theme_support('sleek/cleanup/comment_form_placeholders')) {
 		# All fields we want to add placeholders to
+		# NOTE: We're using WP core's translations here
 		$fieldsToReplace = [
 			'author' => __('Name'),
 			'email' => __('Email'),
