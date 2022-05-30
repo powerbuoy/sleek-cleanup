@@ -55,31 +55,4 @@ if (!is_admin()) {
 
 		return $defaults;
 	});
-
-	##########################
-	# Remove self closing tags
-	function remove_self_closing_tags ($input) {
-		return str_replace(' />', '>', $input);
-	}
-
-	add_filter('get_avatar', __NAMESPACE__ . '\\remove_self_closing_tags');
-	add_filter('comment_id_fields', __NAMESPACE__ . '\\remove_self_closing_tags');
-	add_filter('post_thumbnail_html', __NAMESPACE__ . '\\remove_self_closing_tags');
-
-	################
-	# Cleanup <link>
-	add_filter('style_loader_tag', function ($html) {
-		preg_match_all("!<link rel='stylesheet'\s?(id='[^']+')?\s+href='(.*)' type='text/css' media='(.*)' />!", $html, $matches);
-
-		# Only display media if it is meaningful
-		$media = ($matches[3][0] !== '' and $matches[3][0] !== 'all') ? ' media="' . $matches[3][0] . '"' : '';
-
-		return '<link rel="stylesheet" href="' . $matches[2][0] . '"' . $media . '>' . "\n";
-	});
-
-	##################
-	# Cleanup <script>
-	add_filter('script_loader_tag', function ($html) {
-		return str_replace("'", '"', str_replace("type='text/javascript' ", '', $html));
-	});
 }
